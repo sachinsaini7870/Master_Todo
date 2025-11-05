@@ -39,9 +39,9 @@ def create_app(config_name="development"):
         except (OperationalError, SQLAlchemyError):
             return jsonify({"status": "error", "database": "down"}), 503
     
-    @app.route("/crash")
-    def crash_test():
-        raise RuntimeError("Test runtime error")
+    @app.route("/")
+    def home():
+        return {"message":"this is home route"}
 
     
     return app
