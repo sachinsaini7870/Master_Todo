@@ -4,3 +4,4 @@ wsgi.py
 # virtual environment
 .master_todo_backend/
 instance/
+.vercel
