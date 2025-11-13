@@ -58,7 +58,7 @@ def register_user(data):
 
         return {
             "message": "Registration successful, verify OTP",
-            # "otp": otp_code,  # development only
+            "otp": otp_code,  # development only
             "user_id": user.id,
         }, 201
 

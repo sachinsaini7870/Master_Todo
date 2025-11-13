@@ -1,6 +1,6 @@
 # Backend_03112025\app\models\otp_model.py
 from ..extensions import db
-
+from ..utils.time_conversion import to_indianStandardTime
 
 class OTP(db.Model):
     __tablename__ = "otp"
@@ -42,7 +42,12 @@ class OTP(db.Model):
         return {
             "id": self.id,
             "purpose": self.purpose,
-            "expres": self.expires_at,
+            "expires_at": self.expires_at,
             "attempt_count": self.attempt_count,
-            "updated_at": self.updated_at,
+            "created_at": str(to_indianStandardTime(self.created_at)),
+            "updated_at": str(to_indianStandardTime(self.updated_at)),
         }
+
+    def __repr__(self):
+        """Official string representation of the User object for debugging."""
+        return f"<User id={self.id}, purpose={self.purpose}, expire_at={self.expire_at}, attempt_count={self.attempt_count}, created_at={str(to_indianStandardTime(self.created_at))}, updated_at={str(to_indianStandardTime(self.updated_at))}>"

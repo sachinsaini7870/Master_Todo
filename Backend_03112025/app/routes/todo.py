@@ -1,14 +1,23 @@
 # Backend_03112025\app\routes\todo.py
-from flask_restx import Namespace, Resource # Flask-RESTX classes for namespaces, resources, and Swagger models
+from flask_restx import (
+    Namespace,
+    Resource,
+)  # Flask-RESTX classes for namespaces, resources, and Swagger models
 from flask import request  # To access incoming JSON payloads
 from flask_jwt_extended import jwt_required, get_jwt_identity  # For JWT authentication
 from marshmallow import ValidationError  # To catch validation errors from Marshmallow
-from ..schemas.todo_schema import TodoCreateSchema, TodoUpdateSchema  # Marshmallow schemas for todo
+from ..schemas.todo_schema import (
+    TodoCreateSchema,
+    TodoUpdateSchema,
+)  # Marshmallow schemas for todo
 from ..services.todo_service import (  # Service layer functions for CRUD operations
-    create_todo_service, list_todos_service, get_todo_service,
-    update_todo_service, delete_todo_service
+    create_todo_service,
+    list_todos_service,
+    get_todo_service,
+    update_todo_service,
+    delete_todo_service,
 )
-from ..swagger_models.todo_models import swagger_todo_models
+from ..swagger_models.todo_models import swagger_todo_in_models, swagger_todo_out_models
 
 # -------------------------------
 # Namespace definition
@@ -18,7 +27,9 @@ from ..swagger_models.todo_models import swagger_todo_models
 todo_ns = Namespace("todos", description="Todo operations")
 
 # Register Swagger models
-todo_put_model, todo_post_model = swagger_todo_models(todo_ns)
+todo_post_in_model, todo_put_in_model = swagger_todo_in_models(todo_ns)
+todo_post_out_model, todo_put_out_model = swagger_todo_out_models(todo_ns)
+
 
 # -------------------------------
 # /todos route for list and create
@@ -39,7 +50,10 @@ class TodoList(Resource):
         return list_todos_service(user_id)
 
     @jwt_required()
-    @todo_ns.expect(todo_post_model, validate=True)  # Validate incoming request against Swagger model
+    @todo_ns.expect(
+        todo_post_in_model, validate=True
+    )  # Validate incoming request against Swagger model
+    @todo_ns.marshal_with(todo_post_out_model)  # Output response with swagger model
     def post(self):
         """
         POST /todos
@@ -48,11 +62,14 @@ class TodoList(Resource):
         3. Otherwise, create a new todo for the current user
         """
         try:
-            data = TodoCreateSchema().load(request.json)  # Validate and deserialize request
+            data = TodoCreateSchema().load(
+                request.json
+            )  # Validate and deserialize request
         except ValidationError as err:
             return {"errors": err.messages}, 400  # Return validation errors
         user_id = int(get_jwt_identity())  # Get current user ID
         return create_todo_service(data, user_id)  # Call service layer to create todo
+
 
 # -------------------------------
 # /todos/<todo_id> route for individual todo
@@ -70,7 +87,10 @@ class TodoItem(Resource):
         return get_todo_service(todo_id, user_id)
 
     @jwt_required()
-    @todo_ns.expect(todo_put_model)
+    @todo_ns.expect(
+        todo_put_in_model
+    )  # Validate incoming request against Swagger model
+    @todo_ns.marshal_with(todo_put_out_model)  # Output response with swagger model
     def put(self, todo_id):
         """
         PUT /todos/<todo_id>

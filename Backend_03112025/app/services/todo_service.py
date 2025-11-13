@@ -52,6 +52,7 @@ def list_todos_service(user_id):
         todos = Todo.query.filter_by(user_id=user_id, status=True).all()  # Fetch all todos for user
         if len(todos) < 1:
             return {"message": "No todo found"}, 200
+        print(todos)
         return [t.to_dict() for t in todos], 200  # Convert each todo to dict and return
     except OperationalError:
         return {"error": "Database unavailable"}, 503
