@@ -1,5 +1,7 @@
+# Backend_03112025\app\config.py
 import os
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv()
 
@@ -18,6 +20,9 @@ class BaseConfig:
     # and protect against tampering, CSRF attacks, etc.
     # This should always be overridden with a strong value in production.
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+    
+    # Pretty JSON (automatic formatting)
+    JSONIFY_PRETTYPRINT_REGULAR = True
 
     # --------------------------
     # ✅ DATABASE SETTINGS
@@ -37,6 +42,8 @@ class BaseConfig:
     # JWT_SECRET_KEY is used to sign and verify JWT access tokens.
     # Must be a strong secret in production to prevent token hacking.
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+
 
     # --------------------------
     # ✅ LOGGING SETTINGS
@@ -53,6 +60,7 @@ class BaseConfig:
     # making API documentation easier to read in all environments.
     RESTX_MASK_SWAGGER = False   # Disable mask fields (clean output)
     SWAGGER_UI_DOC_EXPANSION = "none"
+    
 
     # --------------------------
     # ✅ GENERAL APP SETTINGS

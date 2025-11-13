@@ -1,3 +1,4 @@
+# Backend_03112025\app\routes\todo.py
 from flask_restx import Namespace, Resource # Flask-RESTX classes for namespaces, resources, and Swagger models
 from flask import request  # To access incoming JSON payloads
 from flask_jwt_extended import jwt_required, get_jwt_identity  # For JWT authentication
@@ -17,7 +18,7 @@ from ..swagger_models.todo_models import swagger_todo_models
 todo_ns = Namespace("todos", description="Todo operations")
 
 # Register Swagger models
-todo_put_model, todo_out_model, todo_post_model = swagger_todo_models(todo_ns)
+todo_put_model, todo_post_model = swagger_todo_models(todo_ns)
 
 # -------------------------------
 # /todos route for list and create
@@ -25,7 +26,6 @@ todo_put_model, todo_out_model, todo_post_model = swagger_todo_models(todo_ns)
 @todo_ns.route("/")
 class TodoList(Resource):
     @jwt_required()  # Require valid JWT to access
-    @todo_ns.marshal_list_with(todo_out_model)  # Automatically format output with TodoOut model
     def get(self):
         """
         GET /todos
@@ -60,7 +60,6 @@ class TodoList(Resource):
 @todo_ns.route("/<int:todo_id>")
 class TodoItem(Resource):
     @jwt_required()
-    @todo_ns.marshal_with(todo_out_model)  # Format output with TodoOut model
     def get(self, todo_id):
         """
         GET /todos/<todo_id>

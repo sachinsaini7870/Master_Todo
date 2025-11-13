@@ -1,3 +1,4 @@
+# Backend_03112025\app\errors.py
 from flask import jsonify  # Used to return JSON responses
 from marshmallow import ValidationError  # To catch validation errors from Marshmallow schemas
 from sqlalchemy.exc import OperationalError, SQLAlchemyError

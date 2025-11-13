@@ -1,3 +1,4 @@
+# Backend_03112025\app\schemas\auth_schema.py
 from marshmallow import Schema, fields, validate  # Schema base class, field types, and validators
 
 # -------------------------------
@@ -34,3 +35,7 @@ class LoginSchema(Schema):
     password = fields.Str(
         required=True                       # Must be provided
     )
+
+class ResetPasswordSchema(Schema):
+    email = fields.Email(required=True)
+    new_password = fields.Str(required=True, validate=validate.Length(min=6))

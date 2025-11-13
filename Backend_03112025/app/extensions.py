@@ -1,3 +1,4 @@
+# Backend_03112025\app\extensions.py
 from flask import Blueprint
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
