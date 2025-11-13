@@ -11,6 +11,7 @@ from datetime import datetime, timedelta  # To set token expiration time
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
 from ..utils.otp_generator import generate_otp
+from ..utils.send_email import send_otp_email
 
 
 def register_user(data):
@@ -53,9 +54,11 @@ def register_user(data):
         db.session.add(otp_entry)
         db.session.commit()
 
+        send_otp_email(user.email, otp_code)
+
         return {
             "message": "Registration successful, verify OTP",
-            "otp": otp_code,  # development only
+            # "otp": otp_code,  # development only
             "user_id": user.id,
         }, 201
 

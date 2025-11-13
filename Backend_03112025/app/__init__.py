@@ -1,7 +1,7 @@
 # Backend_03112025\app\__init__.py
 from flask import Flask, jsonify
 from .config import config_map
-from .extensions import db, migrate, jwt, ma, api_bp, api
+from .extensions import db, migrate, jwt, ma, api_bp, api, mail
 from .errors import register_error_handlers
 from .routes.auth import auth_ns
 from .routes.todo import todo_ns
@@ -19,6 +19,7 @@ def create_app(config_name="development"):
     migrate.init_app(app, db) # add sql migration with alembic to app
     jwt.init_app(app) # add jwt manager to app
     ma.init_app(app) # add Marshmallow validator to app
+    mail.init_app(app)
     
     # Register namespaces in api
     api.init_app(api_bp) # add flask_restx api ui to app where route is /docs
