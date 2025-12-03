@@ -1,5 +1,34 @@
 import { redirect } from "react-router-dom";
-import { changePasswordApi, resendRegisterOtpApi, resetPasswordApi, sendForgotApi, sendRegisterOtpApi, verifyRegisterOtpApi } from "../../api";
+import { changePasswordApi, loginApi, resendRegisterOtpApi, resetPasswordApi, sendForgotApi, sendRegisterOtpApi, verifyRegisterOtpApi } from "../../api";
+
+
+export async function loginAction({ request }) {
+    try {
+        const formData = await request.formData();
+
+        const payload = {
+            email: formData.get("email"),
+            password: formData.get("password"),
+        };
+
+        const res = await loginApi(payload);
+
+        if (res.token && res.user) {
+            localStorage.setItem("token", res.token);
+            localStorage.setItem("user", res.user);
+
+            return redirect("/todos/list");
+        }
+
+    } catch (error) {
+        const message = error.response?.data?.error || "Something went wrong, try again.";
+
+        return {
+            success: false,
+            error: message,
+        };
+    }
+}
 
 
 export async function sendRegisterOtpAction({ request }) {
@@ -131,9 +160,9 @@ export async function restPasswordAction({ request, params }) {
 
 export async function changePasswordAction({ request }) {
     try {
-        
+
         const formData = await request.formData();
-        
+
 
 
         const payload = {

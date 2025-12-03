@@ -2,7 +2,7 @@ import { Login, Signup, Forgot } from "../Modules/auth/";
 import RootError from "../Modules/components/RootError";
 import { redirect } from "react-router-dom";
 import AuthLayout from "../Modules/layouts/AuthLayout";
-import { forgotAction, reSendRegisterOtpAction, restPasswordAction, sendRegisterOtpAction, verifyRegisterOtpAction } from "./actions/authActions";
+import { forgotAction, loginAction, reSendRegisterOtpAction, restPasswordAction, sendRegisterOtpAction, verifyRegisterOtpAction } from "./actions/authActions";
 import VerifySignUp from "../Modules/auth/VerifySignUp";
 import ResetPassword from "../Modules/auth/ResetPassword";
 
@@ -15,7 +15,7 @@ export const AuthRoutes = [
         ErrorBoundary: RootError,
         children: [
             { index: true, loader: () => redirect("./login") },
-            { path: "login", Component: Login },
+            { path: "login", Component: Login, action: loginAction },
 
             { path: "signup", Component: Signup, action: sendRegisterOtpAction, },
             { path: "verify-signup", Component: VerifySignUp, action: verifyRegisterOtpAction },

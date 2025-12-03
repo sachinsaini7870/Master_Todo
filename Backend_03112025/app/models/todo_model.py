@@ -21,7 +21,6 @@ class Todo(db.Model):
         nullable=False,
         comment="This is refrence of primary key of user table",
     )
-    # created_at = db.Column(db.DateTime, default=lambda:datetime.now(timezone.utc))
     created_at = db.Column(
         db.DateTime, default=db.func.now(), comment="time of todo created"
     )

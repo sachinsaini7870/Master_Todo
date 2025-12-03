@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { Form, NavLink } from 'react-router-dom'
+import React from 'react'
+import { Form, NavLink, useActionData, useNavigation } from 'react-router-dom'
 
 const Signup = () => {
 
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const actionData = useActionData();
+    const navigation = useNavigation();
 
-    function handleSubmit() {
-        setIsSubmitting(true)
-    }
+    const isSubmitting = navigation.state === "submitting";
+
 
     return (
         <div className="Login-Container">
@@ -28,9 +28,12 @@ const Signup = () => {
                             <label>Password:</label>
                             <input name="password" type="password" required />
                         </div>
-                        <button type="submit" className="Button"
-                            onClick={handleSubmit}
-                        >
+
+                        {/* backend action errors */}
+                        {actionData?.error && <p className='Resend-Otp-Error'>{actionData.error}</p>}
+                        {actionData?.success && <p className="Resend-Otp">{actionData.message}</p>}
+
+                        <button type="submit" className="Button">
                             {isSubmitting ? "Sending..." : "Send OTP"}
                         </button>
 
