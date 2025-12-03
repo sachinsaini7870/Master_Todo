@@ -3,7 +3,7 @@ from ..extensions import db
 from ..utils.time_conversion import to_indianStandardTime
 
 
-class User(db.Model):
+class USER(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, comment="primary key of user")
 

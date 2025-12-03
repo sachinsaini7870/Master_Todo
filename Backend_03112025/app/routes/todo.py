@@ -45,9 +45,20 @@ class TodoList(Resource):
         3. Return list of todos with proper HTTP status
         """
         user_id = int(get_jwt_identity())  # Extract current user ID from JWT
-        # data, status = list_todos_service(user_id)  # Call service layer
-        # return data, status
-        return list_todos_service(user_id)
+        
+        completed_param = request.args.get("completed")  # string or None
+
+        # Convert query param into boolean or None
+        if completed_param is None:
+            completed_filter = None
+        elif completed_param.lower() == "true":
+            completed_filter = True
+        elif completed_param.lower() == "false":
+            completed_filter = False
+        else:
+            return {"error": "Invalid value for completed. Use true or false."}, 400
+        
+        return list_todos_service(user_id, completed_filter)
 
     @jwt_required()
     @todo_ns.expect(

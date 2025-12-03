@@ -1,7 +1,8 @@
 # Backend_03112025\app\services\todo_service.py
 from ..extensions import db  # SQLAlchemy instance to interact with the database
-from ..models.todo_model import Todo     # Todo model from SQLAlchemy
-from sqlalchemy.exc import OperationalError, SQLAlchemyError 
+from ..models.todo_model import Todo  # Todo model from SQLAlchemy
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy import desc
 
 
 # -------------------------------
@@ -23,11 +24,10 @@ def create_todo_service(data, user_id):
         if "completed" in data:
             todo.completed = data["completed"]
         if "description" in data:
-            todo.description=data["description"]
+            todo.description = data["description"]
 
-        
-        db.session.add(todo)    # Add to SQLAlchemy session
-        db.session.commit()     # Commit to save in database
+        db.session.add(todo)  # Add to SQLAlchemy session
+        db.session.commit()  # Commit to save in database
         return todo.to_dict(), 201  # Return todo as dictionary with HTTP 201
     except OperationalError:
         return {"error": "Database not reachable"}, 503
@@ -39,25 +39,39 @@ def create_todo_service(data, user_id):
 # -------------------------------
 # List all todos for a user
 # -------------------------------
-def list_todos_service(user_id):
+def list_todos_service(user_id, completed_filter=None):
     """
-    Retrieves all todos for a specific user.
+    Retrieves todos for a user, with optional completed filter.
     Args:
         user_id (int): ID of the user
+        completed_filter (bool | None): True, False, or None
     Returns:
-        list: List of serialized todos
-        int: HTTP status code 200 (OK)
+        list or dict, int: response and status code
     """
     try:
-        todos = Todo.query.filter_by(user_id=user_id, status=True).all()  # Fetch all todos for user
-        if len(todos) < 1:
+        query = Todo.query.filter_by(user_id=user_id, status=True)
+
+        # Apply completed filter ONLY if provided
+        if completed_filter is True:
+            query = query.filter_by(completed=True)
+        elif completed_filter is False:
+            query = query.filter_by(completed=False)
+
+        query = query.order_by(desc(Todo.updated_at))
+
+        todos = query.all()
+
+        if not todos:
             return {"message": "No todo found"}, 200
-        print(todos)
-        return [t.to_dict() for t in todos], 200  # Convert each todo to dict and return
+
+        return [t.to_dict() for t in todos], 200
+
     except OperationalError:
         return {"error": "Database unavailable"}, 503
     except SQLAlchemyError:
         return {"error": "Database query failed"}, 500
+0
+
 # -------------------------------
 # Get a single todo by ID for a user
 # -------------------------------
@@ -71,19 +85,21 @@ def get_todo_service(todo_id, user_id):
         dict: Serialized todo or error message
         int: HTTP status code
     """
-    
+
     try:
-        
-        todo = Todo.query.filter_by(id=todo_id, user_id=user_id, status=True).first()  # Fetch todo
+        todo = Todo.query.filter_by(
+            id=todo_id, user_id=user_id, status=True
+        ).first()  # Fetch todo
         print(todo)
         if not todo:
             return {"error": "Todo not found"}, 404  # Return 404 if not found
-        
+
         return todo.to_dict(), 200  # Return todo as dict
     except OperationalError:
         return {"error": "Database not reachable"}, 503
     except SQLAlchemyError as err:
         return {"error": err.message}, 500
+
 
 # -------------------------------
 # Update a todo
@@ -101,8 +117,9 @@ def update_todo_service(todo_id, data, user_id):
     """
 
     try:
-        
-        todo = Todo.query.filter_by(id=todo_id, user_id=user_id, status=True).first()  # Fetch todo
+        todo = Todo.query.filter_by(
+            id=todo_id, user_id=user_id, status=True
+        ).first()  # Fetch todo
         if not todo:
             return {"error": "Todo not found"}, 404  # Return 404 if not found
 
@@ -112,7 +129,7 @@ def update_todo_service(todo_id, data, user_id):
         if "completed" in data:
             todo.completed = data["completed"]
         if "description" in data:
-            todo.description=data["description"]
+            todo.description = data["description"]
 
         db.session.commit()  # Save changes
         return todo.to_dict(), 200  # Return updated todo
@@ -122,6 +139,7 @@ def update_todo_service(todo_id, data, user_id):
     except SQLAlchemyError:
         db.session.rollback()
         return {"error": "Error saving todo"}, 500
+
 
 # -------------------------------
 # Delete a todo
@@ -141,10 +159,10 @@ def delete_todo_service(todo_id, user_id):
         if not todo:
             return {"error": "Todo not found"}, 404  # Return 404 if not found
 
-        todo.status=False
-        
+        todo.status = False
+
         # db.session.delete(todo)  # Delete todo from session
-        db.session.commit()      # Commit deletion
+        db.session.commit()  # Commit deletion
         return {"message": "Todo deleted"}, 200  # Return success message
     except OperationalError:
         return {"error": "Database not reachable"}, 503

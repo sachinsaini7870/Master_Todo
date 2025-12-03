@@ -27,7 +27,7 @@ class TodoUpdateSchema(Schema):
     title = fields.Str(
         validate=validate.Length(min=1)    # If provided, title must have at least 1 character
     )
-    description = fields.Str(required=False)
+    description = fields.Str()
     completed = fields.Boolean()           # Optional field to mark todo as completed or not
 
 # -------------------------------

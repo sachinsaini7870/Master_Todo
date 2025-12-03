@@ -1,7 +1,7 @@
 # Backend_03112025\app\__init__.py
 from flask import Flask, jsonify
 from .config import config_map
-from .extensions import db, migrate, jwt, ma, api_bp, api, mail
+from .extensions import db, migrate, jwt, ma, api_bp, api, mail, cors
 from .errors import register_error_handlers
 from .routes.auth import auth_ns
 from .routes.todo import todo_ns
@@ -21,6 +21,8 @@ def create_app(config_name="development"):
     ma.init_app(app) # add Marshmallow validator to app
     mail.init_app(app)
     
+    cors.init_app(app, resources={r"/api/*": {"origins": "*"} })
+    
     # Register namespaces in api
     api.init_app(api_bp) # add flask_restx api ui to app where route is /docs
     api.add_namespace(auth_ns, path="/auth")
@@ -32,7 +34,7 @@ def create_app(config_name="development"):
     # register error handlers
     register_error_handlers(app)
     
-    # ✅ Health check endpoint for database status
+    # Health check endpoint for database status
     @app.route("/health")
     def health():
         try:

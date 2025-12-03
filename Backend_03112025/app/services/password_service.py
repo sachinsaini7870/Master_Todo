@@ -1,5 +1,5 @@
 from ..extensions import db
-from ..models.user_model import User
+from ..models.user_model import USER
 from werkzeug.security import generate_password_hash
 
 
@@ -8,7 +8,7 @@ def reset_password_service(data):
     new_password = data["new_password"]
 
     try:
-        user = User.query.filter_by(email=email).first()
+        user = USER.query.filter_by(email=email).first()
         if not user:
             return {"error": "User not found"}, 404
 

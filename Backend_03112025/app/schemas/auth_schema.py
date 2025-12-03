@@ -1,5 +1,10 @@
 # Backend_03112025\app\schemas\auth_schema.py
-from marshmallow import Schema, fields, validate  # Schema base class, field types, and validators
+from marshmallow import (
+    Schema,
+    fields,
+    validate,
+)  # Schema base class, field types, and validators
+
 
 # -------------------------------
 # Schema for user registration
@@ -9,17 +14,19 @@ class RegisterSchema(Schema):
     Marshmallow schema to validate incoming registration data.
     Ensures proper types and basic rules for each field.
     """
+
     username = fields.Str(
-        required=True,                      # Must be provided
-        validate=validate.Length(min=3)     # Minimum 3 characters long
+        required=True,  # Must be provided
+        validate=validate.Length(min=3),  # Minimum 3 characters long
     )
     email = fields.Email(
-        required=True                       # Must be provided and a valid email format
+        required=True  # Must be provided and a valid email format
     )
     password = fields.Str(
-        required=True,                      # Must be provided
-        validate=validate.Length(min=6)     # Minimum 6 characters for security
+        required=True,  # Must be provided
+        validate=validate.Length(min=6),  # Minimum 6 characters for security
     )
+
 
 # -------------------------------
 # Schema for user login
@@ -29,13 +36,20 @@ class LoginSchema(Schema):
     Marshmallow schema to validate login data.
     Only requires email and password.
     """
+
     email = fields.Email(
-        required=True                       # Must be provided and a valid email
+        required=True  # Must be provided and a valid email
     )
     password = fields.Str(
-        required=True                       # Must be provided
+        required=True  # Must be provided
     )
 
+
 class ResetPasswordSchema(Schema):
-    email = fields.Email(required=True)
+    token = fields.Str(required=True)
+    password = fields.Str(required=True, validate=validate.Length(min=6))
+
+
+class ChangePasswordSchema(Schema):
+    old_password = fields.Str(required=True, validate=validate.Length(min=6))
     new_password = fields.Str(required=True, validate=validate.Length(min=6))
