@@ -1,12 +1,15 @@
 // import React, { useEffect, useState } from "react";
 import { useState } from "react";
-import { Form } from "react-router-dom";
+import { Form, useNavigation } from "react-router-dom";
 
 
 export default function TodoForm({
     initialTodo = { title: "", description: "" }
 }) {
     const form = initialTodo;
+    const navigation = useNavigation();
+
+    const isSubmitting = navigation.state === "submitting";
 
     const [error, setError] = useState("");
 
@@ -62,7 +65,7 @@ export default function TodoForm({
                     type="submit"
                     className='Button'
                 >
-                    Save Todo
+                   {isSubmitting ? "Creating..." : "Create"}
                 </button>
             </Form>
         </>

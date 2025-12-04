@@ -72,7 +72,7 @@ const TodoItem = ({ todo }) => {
 
                             {showDelete && (
                                 <div className="Confirm-Popup" ref={popupRef}>
-                                    <p>Delete?</p>
+                                    {fetcher.state === "submitting"? <p className="Delete-Popup">Deleting...  </p> : <p>Delete?</p> }
 
                                     <button className="btn-confirm" onClick={handleDelete}>
                                         Yes

@@ -56,7 +56,8 @@ const ShowTodo = () => {
 
                                 {showDelete && (
                                     <div className="Confirm-Popup">
-                                        <p>Delete?</p>
+                                        {fetcher.state === "submitting" ? <p >Deleting...</p> : <p>Delete?</p>}
+
 
                                         <button className="btn-confirm" onClick={handleDelete}>
                                             Yes
