@@ -158,11 +158,12 @@ def delete_todo_service(todo_id, user_id):
         if not todo:
             return {"error": "Todo not found"}, 404  # Return 404 if not found
 
+        deleted_todo = todo.to_dict()
         todo.status = False
 
         # db.session.delete(todo)  # Delete todo from session
         db.session.commit()  # Commit deletion
-        return {"message": "Todo deleted"}, 200  # Return success message
+        return {"message": "Todo deleted", "data": deleted_todo}, 200  # Return success message
     except OperationalError:
         return {"error": "Database not reachable"}, 503
     except SQLAlchemyError as err:
