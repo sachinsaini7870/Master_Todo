@@ -62,12 +62,9 @@ const VerifySignUp = () => {
                     </Form>
 
                     <div className="Login-Links">
-                        {fetcher.data?.error && (
-                            <p className='Resend-Otp-Error'>{fetcher.data.error}</p>
-                        )}
-                        {fetcher.data?.success && (
-                            <p className="Resend-Otp">{fetcher.data.message}</p>
-                        )}
+                        {fetcher.state === "submitting" ? "" : fetcher.data?.error && ( <p className='Resend-Otp-Error'>{fetcher.data.error}</p> )}
+                        {fetcher.state === "submitting" ? "" : fetcher.data?.success && ( <p className="Resend-Otp">{fetcher.data.message}</p> )}
+                        
                         <ul >
 
                             <li>

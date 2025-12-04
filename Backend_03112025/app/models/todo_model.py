@@ -1,6 +1,7 @@
 # Backend_03112025\app\models\todo_model.py
 from ..extensions import db
-from ..utils.time_conversion import to_indianStandardTime
+from ..utils.time_conversion import utc_to_ist, to_iso
+from datetime import datetime
 
 class Todo(db.Model):
     __tablename__ = "todo"
@@ -22,12 +23,12 @@ class Todo(db.Model):
         comment="This is refrence of primary key of user table",
     )
     created_at = db.Column(
-        db.DateTime, default=db.func.now(), comment="time of todo created"
+        db.DateTime, default=datetime.utcnow, comment="time of todo created"
     )
     updated_at = db.Column(
         db.DateTime,
-        default=db.func.now(),
-        onupdate=db.func.now(),
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
         comment="time of todo update",
     )
 
@@ -38,10 +39,10 @@ class Todo(db.Model):
             "description": self.description,
             "completed": self.completed,
             "user_id": self.user_id,
-            "created_at": str(to_indianStandardTime(self.created_at)),
-            "updated_at": str(to_indianStandardTime(self.updated_at))
+            "created_at": to_iso(utc_to_ist(self.created_at)),
+            "updated_at": to_iso(utc_to_ist(self.updated_at))
         }
 
     def __repr__(self):
         """Official string representation of the Todo object for debugging."""
-        return f"<Todo id={self.id}, title={self.title}, completed={self.completed}, user_id={self.user_id}, status={self.status}, created_at={str(to_indianStandardTime(self.created_at))}, updated_at={str(to_indianStandardTime(self.updated_at))}>"
+        return f"<Todo id={self.id}, title={self.title}, completed={self.completed}, user_id={self.user_id}, status={self.status}, created_at={to_iso(utc_to_ist(self.created_at))}, updated_at={to_iso(utc_to_ist(self.updated_at))}>"

@@ -105,7 +105,12 @@ ul li {
     padding: 0 10px 10px 10px;
     padding-bottom: 0;
     min-width: 25%;
+    cursor: pointer;
+}
 
+.Logo:hover{
+    color: #0d73f4;
+    transform: scale(1.05);
 }
 
 .Nav-Menu {

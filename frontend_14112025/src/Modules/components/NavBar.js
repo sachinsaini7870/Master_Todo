@@ -17,7 +17,7 @@ const NavBar = () => {
     return (
         <>
             <div className='Auth-Navbar'>
-                <div className='Logo'>Todo App</div>
+                <div className='Logo' onClick={() => navigate("/todos/list")}>Todo App</div>
                 <div className='Nav-Menu'>
                     {isAuthenticated ?
                         <>
@@ -31,7 +31,7 @@ const NavBar = () => {
                                 <div className="Profile">
                                     <i className="fa-regular fa-circle-user Profile-icon"></i>{user}
                                     <div className='Profile-Menu'>
-                                        <p onClick={()=>navigate("/todos/change-password")}>Change Password</p>
+                                        <p onClick={() => navigate("/todos/change-password")}>Change Password</p>
                                         <p onClick={onLogout}>Logout</p>
                                     </div>
                                 </div>

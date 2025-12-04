@@ -14,14 +14,12 @@ from ..schemas.auth_schema import (
     LoginSchema,
     ResetPasswordSchema,
     ChangePasswordSchema,
+    OTPRegisterResendSchema,
+    OTPRegisterVerifySchema,
+    ForgotPasswordSchema,
 )  # Marshmallow schemas for validating register/login input
 
 
-from ..schemas.otp_schema import (
-    OTPRegisterVerifySchema,
-    OTPRegisterResendSchema,
-    ForgotPasswordSchema,
-)
 
 from ..services.auth_service import (
     login_user,

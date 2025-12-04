@@ -1,8 +1,6 @@
 # Backend_03112025\app\services\auth_service.py
 from ..extensions import db
-from ..models.user_model import USER
-from ..models.otp_model import OTP
-from ..models.forgot_password_model import FORGOT_PASSWORD
+from ..models.auth_models import USER, OTP, FORGOT_PASSWORD
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash,
@@ -236,9 +234,23 @@ def verify_register_otp_service(data):
         db.session.commit()
 
         # Generate JWT directly
+        user_dict = user.to_dict()
+        additional_claims = {
+            "username": user_dict["username"],
+            "email": user_dict["email"],
+            "email_verified": user_dict["email_verified"],
+            "status": user_dict["status"],
+            "created_at": user_dict["created_at"],
+            "updated_at": user_dict["updated_at"],
+        }
+
         token = create_access_token(
-            identity=str(user.id), expires_delta=timedelta(hours=24)
+            identity=str(user.id),
+            fresh=True,
+            additional_claims=additional_claims,
+            expires_delta=timedelta(hours=24),
         )
+
 
         return {
             "message": "OTP verified successfully",
@@ -264,10 +276,25 @@ def forgot_service(data):
         if user.status != "active":
             return {"error": "Inactive user"}, 400
 
+        # Genrate jwt token
+        user_dict = user.to_dict()
+        additional_claims = {
+            "username": user_dict["username"],
+            "email": user_dict["email"],
+            "email_verified": user_dict["email_verified"],
+            "status": user_dict["status"],
+            "created_at": user_dict["created_at"],
+            "updated_at": user_dict["updated_at"],
+        }
+
         token = create_access_token(
-            identity=str(user.id), expires_delta=timedelta(minutes=5)
+            identity=str(user.id),
+            fresh=True,
+            additional_claims=additional_claims,
+            expires_delta=timedelta(minutes=5),
         )
 
+        
         forgot_entry = FORGOT_PASSWORD(
             user_id=user.id,
             token=token,
@@ -307,7 +334,7 @@ def reset_password_service(data):
         if not reset_entry:
             return {"error": "Invalid token! Please try again later"}, 400
 
-        print(reset_entry)
+        
 
         if datetime.utcnow() > reset_entry.expires_at:
             return {"error": "Link expired! Try again."}, 400
@@ -338,7 +365,7 @@ def change_password_service(data, email):
             return {"error": "User not found"}, 404
 
         if not check_password_hash(user.password_hash, old_password):
-            return {"error": "Invalid Password"}, 401
+            return {"error": "Wrong old password"}, 401
 
         hashed_password = generate_password_hash(new_password)
 

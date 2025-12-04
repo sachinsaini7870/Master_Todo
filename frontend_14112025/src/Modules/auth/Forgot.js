@@ -32,12 +32,8 @@ const Forgot = () => {
                         </Form>
 
                         <div className='Login-Links'>
-                            {actionData?.error  && (
-                                <p className='Resend-Otp-Error'>{actionData.error}</p>
-                            )}
-                            {actionData?.success && (
-                                <p className="Resend-Otp">{actionData.message}</p>
-                            )}
+                            {isSubmitting ? "" : actionData?.error && (<p className='Resend-Otp-Error'>{actionData.error}</p>)}
+                            {isSubmitting ? "" : actionData?.success && (<p className="Resend-Otp">{actionData.message}</p>)}
                             <ul >
                                 <li>
                                     <NavLink to={"/auth/login"}>Login</NavLink>

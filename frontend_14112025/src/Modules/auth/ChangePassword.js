@@ -37,7 +37,7 @@ const ChangePassword = () => {
     return (
         <div className="Login-Container">
             <div className="Login">
-                <h1>Reset Password</h1>
+                <h1>Change Password</h1>
 
                 <div className='Login-Form'>
 
@@ -73,13 +73,16 @@ const ChangePassword = () => {
                             />
                         </div>
 
-                        {/* frontend validation error */}
-                        {error && <p className="Resend-Otp-Error">{error}</p>}
+                        {isSubmitting ? "" :
+                            <div>
+                                {/* backend action errors */}
+                                {actionData?.error && <p className='Resend-Otp-Error'>{actionData.error}</p>}
+                                {actionData?.success && <p className="Resend-Otp">{actionData.message}</p>}
 
-                        {/* backend action errors */}
-                        {actionData?.error && <p className='Resend-Otp-Error'>{actionData.error}</p>}
-                        {actionData?.success && <p className="Resend-Otp">{actionData.message}</p>}
-
+                                {/* frontend validation error */}
+                                {error && <p className="Resend-Otp-Error">{error}</p>}
+                            </div>
+                        }
                         <button type="submit" className="Button" disabled={isSubmitting}>
                             {isSubmitting ? "Updating..." : "Change Password"}
                         </button>

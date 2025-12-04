@@ -53,3 +53,21 @@ class ResetPasswordSchema(Schema):
 class ChangePasswordSchema(Schema):
     old_password = fields.Str(required=True, validate=validate.Length(min=6))
     new_password = fields.Str(required=True, validate=validate.Length(min=6))
+
+
+class OTPRegisterVerifySchema(Schema):
+    """
+    Used to verify OTP
+    """
+
+    email = fields.Email(required=False)
+    otp = fields.Str(required=True, validate=validate.Length(equal=6))
+
+
+class OTPRegisterResendSchema(Schema):
+    email = fields.Email(required=True)
+
+
+class ForgotPasswordSchema(Schema):
+    email = fields.Email(required=True)
+    

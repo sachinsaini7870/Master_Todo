@@ -90,7 +90,6 @@ def get_todo_service(todo_id, user_id):
         todo = Todo.query.filter_by(
             id=todo_id, user_id=user_id, status=True
         ).first()  # Fetch todo
-        print(todo)
         if not todo:
             return {"error": "Todo not found"}, 404  # Return 404 if not found
 
